@@ -4,6 +4,8 @@ const path = require("path");
 const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
+const cookieParser = require("cookie-parser");
+const cookie = require("cookie");
 const { User, Message } = require("./src/classes");
 
 // constants
@@ -22,6 +24,9 @@ const COLOUR_COMMAND = "/nickcolor";
 // sets express to use the views folder for views
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
+
+// cookie middleware
+app.use(cookieParser());
 
 //initialize static fileserving from /public folder
 app.use(express.static(path.join(__dirname, "public")));
@@ -42,6 +47,12 @@ let userCount = 0;
 
 // index route
 app.get('/', (req, res) => {
+    let expiration = 30 * 60 * 1000; // 30 minutes
+    if (!req.cookies["userName"]) {
+        res.cookie("userName", generateNewName(), { maxAge : expiration});
+    } else {
+        res.cookie("userName", req.cookies["userName"], { maxAge: expiration });
+    }
     res.render("index");
 });
 
@@ -54,12 +65,18 @@ Handles new connection and session
 */
 io.on("connection", (socket) => {
     let userName = null;
-    do {
-        userName = `anon${userCount++}`;
-    } while(userName in allUsers);
+    let user = null;
+    let clientCookies = cookie.parse(socket.request.headers.cookie || socket.handshake.headers.cookie);
+    
+    if (clientCookies["userName"]) {
+        userName = clientCookies["userName"];
+        user = allUsers[userName];
+    } else {
+        userName = generateNewName();
+        user = new User(userName);
+        allUsers[user.name] = user;
+    }
 
-    let user = new User(userName);
-    allUsers[user.name] = user;
     let joinTimestamp = Date.now();
 
     socket.emit("initialConnect", activeUsers, messageList, user);
@@ -159,6 +176,7 @@ function processNickMessage(message, user) {
     let splitMessage = message.split(" ", 2);
     let newNick = "";
     let result = null;
+    let nickCheck = /^[a-z0-9]+$/i;
 
     if(splitMessage.length < 2) {
         error = true;
@@ -169,6 +187,9 @@ function processNickMessage(message, user) {
         if(newNick === "") {
             error = true;
             errMessage = "nickname cannot be blank.";
+        } else if (!nickCheck.test(newNick)) {
+            error = true;
+            errMessage = "nickname must be alphanumeric.";
         } else if (newNick in allUsers) {
             error = true;
             errMessage = `${newNick} is already in use.`;
@@ -241,4 +262,17 @@ function processColourMessage(message, user) {
     }
 
     return [error, result];
+}
+
+/*
+generateNewName
+generates a new username for a user without one
+*/
+function generateNewName() {
+    let userName = null;
+    do {
+        userName = `anon${userCount++}`;
+    } while(userName in allUsers);
+
+    return userName;
 }

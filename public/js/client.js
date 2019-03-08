@@ -9,8 +9,28 @@ Handles receiving a new message from the server
 socket.on("newMessage", (message) => {
     console.log(`${new Date(message.timestamp).toLocaleTimeString()} - ${message.user.name}: ${message.content}`);
 
+    let timestampElem = $(document.createElement("div"))
+        .addClass("timestamp")
+        .text(`${new Date(message.timestamp).toLocaleTimeString()} - `);
+
+    let authorElem = $(document.createElement("div"))
+        .addClass("author")
+        .text(`${message.user.name}`)
+        .css("color", message.user.colour);
+
+    let messageElem = $(document.createElement("div"))
+        .addClass("message")
+        .text(`: ${message.content}`);
+
     let newMessageElem = $(document.createElement("li"))
-        .text(`${new Date(message.timestamp).toLocaleTimeString()} - ${message.user.name}: ${message.content}`);
+        .append(timestampElem)
+        .append(authorElem)
+        .append(messageElem);
+
+    let myName = $("#name");
+    if(myName.text() === message.user.name) {
+        newMessageElem.css("font-weight", "bold");
+    }
 
     $("#messages").append(newMessageElem);
 });
@@ -25,11 +45,12 @@ socket.on("userConnected", (user, timestamp) => {
     console.log(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} connected.`);
 
     let newMessageElem = $(document.createElement("li"))
-        .text(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} connected.`);
+        .text(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} connected.`)
+        .addClass("nonMessage");
     let newUserElem = $(document.createElement("li"))
         .prop("id", user.name)
         .text(user.name)
-        .css('color', user.colour);
+        .css("color", user.colour);
 
     $("#messages").append(newMessageElem);
     $("#activeUsers").append(newUserElem);
@@ -45,7 +66,8 @@ socket.on("userDisconnected", (user, timestamp) => {
     console.log(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} disconnected.`);
 
     let newMessageElem = $(document.createElement("li"))
-        .text(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} disconnected.`);
+        .text(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} disconnected.`)
+        .addClass("nonMessage");
 
     $("#messages").append(newMessageElem);
     $(`#activeUsers > #${user.name}`).remove();
@@ -61,13 +83,19 @@ socket.on("userNameChange", (oldName, newName, timestamp) => {
     console.log(`${new Date(timestamp).toLocaleTimeString()} - ${oldName} changed name to ${newName}.`);
     
     let newMessageElem = $(document.createElement("li"))
-        .text(`${new Date(timestamp).toLocaleTimeString()} - ${oldName} changed name to ${newName}.`);
+        .text(`${new Date(timestamp).toLocaleTimeString()} - ${oldName} changed name to ${newName}.`)
+        .addClass("nonMessage");
     let userElem = $(`#activeUsers > #${oldName}`);
     
     $("#messages").append(newMessageElem);
     userElem
         .prop("id", newName)
-        .text(newName);    
+        .text(newName);
+
+    let myName = $("#name");
+    if(myName.text() === oldName) {
+        myName.text(newName);
+    }
 });
 
 /*
@@ -78,7 +106,8 @@ socket.on("userNameChangeError", (errMessage) => {
     console.log(`Error: ${errMessage}`);
 
     let newMessageElem = $(document.createElement("li"))
-        .text(`Error: ${errMessage}.`);
+        .text(`Error: ${errMessage}`)
+        .addClass("nonMessage");
     
     $("#messages").append(newMessageElem);
 });
@@ -93,12 +122,18 @@ socket.on("userColourChange", (user, oldColour, timestamp) => {
     console.log(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} changed colour from to ${oldColour} to ${user.colour}.`);
     
     let newMessageElem = $(document.createElement("li"))
-        .text(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} changed colour from to ${oldColour} to ${user.colour}.`);
+        .text(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} changed colour from to ${oldColour} to ${user.colour}.`)
+        .addClass("nonMessage");
     let userElem = $(`#activeUsers > #${user.name}`);
     
     $("#messages").append(newMessageElem);
     userElem
-        .css('color', user.colour);   
+        .css("color", user.colour);
+
+    let myName = $("#name");
+    if(myName.text() === user.name) {
+        myName.css("color", user.colour);
+    }
 });
 
 /*
@@ -109,7 +144,8 @@ socket.on("userColourChangeError", (errMessage) => {
     console.log(`Error: ${errMessage}`);
 
     let newMessageElem = $(document.createElement("li"))
-        .text(`Error: ${errMessage}.`);
+        .text(`Error: ${errMessage}`)
+        .addClass("nonMessage");
     
     $("#messages").append(newMessageElem);
 });
@@ -132,10 +168,30 @@ socket.on("initialConnect", (activeUsers, messageList, user) => {
     // add messages from history
     let messageBlock = $("#messages");
     for( let message of messageList) {
-        let newMessageElem = $(document.createElement("li"))
-            .text(`${new Date(message.timestamp).toLocaleTimeString()} - ${message.user.name}: ${message.content}`);
+        let timestampElem = $(document.createElement("div"))
+            .addClass("timestamp")
+            .text(`${new Date(message.timestamp).toLocaleTimeString()} - `);
 
-        messageBlock.append(newMessageElem);
+        let authorElem = $(document.createElement("div"))
+            .addClass("author")
+            .text(`${message.user.name}`)
+            .css("color", message.user.colour);
+
+        let messageElem = $(document.createElement("div"))
+            .addClass("message")
+            .text(`: ${message.content}`);
+
+        let newMessageElem = $(document.createElement("li"))
+            .append(timestampElem)
+            .append(authorElem)
+            .append(messageElem);
+
+        let myName = $("#name");
+        if(myName.text() === message.user.name) {
+            newMessageElem.css("font-weight", "bold");
+        }
+
+        $("#messages").append(newMessageElem);
     }
 
     // add active user list
