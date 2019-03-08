@@ -1,7 +1,7 @@
 doctype html
 html
     head
-        title Socket.IO chat
+        title very good chat
         style.
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { font: 13px Helvetica, Arial; }
@@ -11,11 +11,33 @@ html
             #messages { list-style-type: none; margin: 0; padding: 0; }
             #messages li { padding: 5px 10px; }
             #messages li:nth-child(odd) { background: #eee; }
+        link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
         script(src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js")
         script(src="https://code.jquery.com/jquery-1.11.1.js")
+        script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js")
         script(src="/js/client.js")
+
     body
-        ul#messages
-        form(action='')
-            input#m(autocomplete='off')
-            button Send
+        header.row
+            h1.col-sm-8
+                | very good chat
+            h1.col-sm-4
+                small
+                    | name:
+                    span#name no name yet
+            
+        #main
+            article#messagesHeader
+                h2
+                    | messages
+                ul#messages
+                
+            aside#usersHeader
+                h2
+                    | users
+                ul#activeUsers
+
+        footer#foot          
+            form(action='')
+                input#inputMsg(autocomplete='off')
+                button.btn.btn-primary send
