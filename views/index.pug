@@ -2,37 +2,29 @@ doctype html
 html
     head
         title very good chat
-        style.
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font: 13px Helvetica, Arial; }
-            form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-            form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-            form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-            #messages { list-style-type: none; margin: 0; padding: 0; }
-            #messages li { padding: 5px 10px; }
-            #messages li:nth-child(odd) { background: #eee; }
-        link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
-        script(src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js")
+        meta(name="viewport", content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", type="text/css", media="screen", href="/css/style.css")
+        link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Roboto")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js")
         script(src="https://code.jquery.com/jquery-1.11.1.js")
-        script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js")
+        script(src="https://unpkg.com/cookiejs/dist/cookie.min.js")
         script(src="/js/client.js")
 
     body
-        header.row
-            h1.col-sm-8
+        header#head
+            h2
                 | very good chat
-            h1.col-sm-4
-                small
-                    | name:
-                    span#name no name yet
+            h3
+                | name: 
+                span#name no name yet
             
-        #main
-            article#messagesHeader
+        div#main
+            div#messagesHeader
                 h2
                     | messages
                 ul#messages
                 
-            aside#usersHeader
+            div#usersHeader
                 h2
                     | users
                 ul#activeUsers
@@ -40,4 +32,4 @@ html
         footer#foot          
             form(action='')
                 input#inputMsg(autocomplete='off')
-                button.btn.btn-primary send
+                button#sendButton send

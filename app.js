@@ -47,12 +47,12 @@ let userCount = 0;
 
 // index route
 app.get('/', (req, res) => {
-    let expiration = 30 * 60 * 1000; // 30 minutes
-    if (!req.cookies["userName"]) {
-        res.cookie("userName", generateNewName(), { maxAge : expiration});
-    } else {
+    let expiration = 24 * 60 * 60 * 1000; // 1 day
+
+    if(("userName" in req.cookies) && (req.cookies["userName"] in allUsers)) {
         res.cookie("userName", req.cookies["userName"], { maxAge: expiration });
     }
+
     res.render("index");
 });
 
@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
     let user = null;
     let clientCookies = cookie.parse(socket.request.headers.cookie || socket.handshake.headers.cookie);
     
-    if (clientCookies["userName"]) {
+    if(("userName" in clientCookies) && (clientCookies["userName"] in allUsers)) {
         userName = clientCookies["userName"];
         user = allUsers[userName];
     } else {

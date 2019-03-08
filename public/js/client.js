@@ -9,16 +9,16 @@ Handles receiving a new message from the server
 socket.on("newMessage", (message) => {
     console.log(`${new Date(message.timestamp).toLocaleTimeString()} - ${message.user.name}: ${message.content}`);
 
-    let timestampElem = $(document.createElement("div"))
+    let timestampElem = $(document.createElement("span"))
         .addClass("timestamp")
         .text(`${new Date(message.timestamp).toLocaleTimeString()} - `);
 
-    let authorElem = $(document.createElement("div"))
+    let authorElem = $(document.createElement("span"))
         .addClass("author")
         .text(`${message.user.name}`)
         .css("color", message.user.colour);
 
-    let messageElem = $(document.createElement("div"))
+    let messageElem = $(document.createElement("span"))
         .addClass("message")
         .text(`: ${message.content}`);
 
@@ -96,6 +96,9 @@ socket.on("userNameChange", (oldName, newName, timestamp) => {
     if(myName.text() === oldName) {
         myName.text(newName);
     }
+
+    // set cookie
+    cookie.set("userName", newName, 1); //lasts one day
 });
 
 /*
@@ -168,16 +171,16 @@ socket.on("initialConnect", (activeUsers, messageList, user) => {
     // add messages from history
     let messageBlock = $("#messages");
     for( let message of messageList) {
-        let timestampElem = $(document.createElement("div"))
+        let timestampElem = $(document.createElement("span"))
             .addClass("timestamp")
             .text(`${new Date(message.timestamp).toLocaleTimeString()} - `);
 
-        let authorElem = $(document.createElement("div"))
+        let authorElem = $(document.createElement("span"))
             .addClass("author")
             .text(`${message.user.name}`)
             .css("color", message.user.colour);
 
-        let messageElem = $(document.createElement("div"))
+        let messageElem = $(document.createElement("span"))
             .addClass("message")
             .text(`: ${message.content}`);
 
@@ -204,6 +207,9 @@ socket.on("initialConnect", (activeUsers, messageList, user) => {
 
         activeUsersBlock.append(newUserElem);
     }
+
+    // set cookie
+    cookie.set("userName", user.name, 1); //lasts one day
 });
 
 
