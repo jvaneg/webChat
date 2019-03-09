@@ -11,25 +11,25 @@ html
         script(src="/js/client.js")
 
     body
-        header#head
-            h2
-                | very good chat
-            h3
-                | name: 
-                span#name no name yet
+        div#container
+            header#head
+                h2
+                    | very good chat
+                h3
+                    | name: 
+                    span#name no name yet   
             
-        div#main
-            div#messagesHeader
-                h2
-                    | messages
-                ul#messages
-                
-            div#usersHeader
-                h2
-                    | users
-                ul#activeUsers
+            h2#messageHeader
+                | messages
 
-        footer#foot          
-            form(action='')
-                input#inputMsg(autocomplete='off')
-                button#sendButton send
+            h2#userHeader
+                | users
+                
+            div#messages
+                
+            div#activeUsers
+
+            footer#foot          
+                form(action='')
+                    input#inputMsg(autocomplete='off')
+                    button#sendButton send

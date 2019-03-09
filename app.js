@@ -187,6 +187,9 @@ function processNickMessage(message, user) {
         if(newNick === "") {
             error = true;
             errMessage = "nickname cannot be blank.";
+        } else if (newNick.length >= 32) {
+            error = true;
+            errMessage = "nickname cannot be more than 32 chars.";
         } else if (!nickCheck.test(newNick)) {
             error = true;
             errMessage = "nickname must be alphanumeric.";

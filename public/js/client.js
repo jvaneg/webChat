@@ -1,4 +1,4 @@
-// client javascript
+// cspanent javascript
 
 var socket = io();
 
@@ -22,7 +22,7 @@ socket.on("newMessage", (message) => {
         .addClass("message")
         .text(`: ${message.content}`);
 
-    let newMessageElem = $(document.createElement("li"))
+    let newMessageElem = $(document.createElement("span"))
         .append(timestampElem)
         .append(authorElem)
         .append(messageElem);
@@ -39,15 +39,15 @@ socket.on("newMessage", (message) => {
 userConnected
 Handles a user connected message from the server
 Adds a message indicacting the new connection to the chat
-Adds the user to the active users list
+Adds the user to the active users spanst
 */
 socket.on("userConnected", (user, timestamp) => {
     console.log(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} connected.`);
 
-    let newMessageElem = $(document.createElement("li"))
+    let newMessageElem = $(document.createElement("span"))
         .text(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} connected.`)
         .addClass("nonMessage");
-    let newUserElem = $(document.createElement("li"))
+    let newUserElem = $(document.createElement("span"))
         .prop("id", user.name)
         .text(user.name)
         .css("color", user.colour);
@@ -60,12 +60,12 @@ socket.on("userConnected", (user, timestamp) => {
 userDisconnected
 Handles a user disconnecting message from the server
 Adds a message indicacting the disconnection to the chat
-Removes the user to the active users list
+Removes the user to the active users spanst
 */
 socket.on("userDisconnected", (user, timestamp) => {
     console.log(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} disconnected.`);
 
-    let newMessageElem = $(document.createElement("li"))
+    let newMessageElem = $(document.createElement("span"))
         .text(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} disconnected.`)
         .addClass("nonMessage");
 
@@ -77,12 +77,12 @@ socket.on("userDisconnected", (user, timestamp) => {
 userNameChange
 Handles a user changed their name message from the server
 Adds a message indicacting the user's name change
-Changes the user's name in the active users list
+Changes the user's name in the active users spanst
 */
 socket.on("userNameChange", (oldName, newName, timestamp) => {
     console.log(`${new Date(timestamp).toLocaleTimeString()} - ${oldName} changed name to ${newName}.`);
     
-    let newMessageElem = $(document.createElement("li"))
+    let newMessageElem = $(document.createElement("span"))
         .text(`${new Date(timestamp).toLocaleTimeString()} - ${oldName} changed name to ${newName}.`)
         .addClass("nonMessage");
     let userElem = $(`#activeUsers > #${oldName}`);
@@ -108,7 +108,7 @@ Handles receiving an error from the server when trying to change name
 socket.on("userNameChangeError", (errMessage) => {
     console.log(`Error: ${errMessage}`);
 
-    let newMessageElem = $(document.createElement("li"))
+    let newMessageElem = $(document.createElement("span"))
         .text(`Error: ${errMessage}`)
         .addClass("nonMessage");
     
@@ -119,12 +119,12 @@ socket.on("userNameChangeError", (errMessage) => {
 userColourChange
 Handles a user changed their colour message from the server
 Adds a message indicacting the user's colour change
-Changes the user's colour in the active users list
+Changes the user's colour in the active users spanst
 */
 socket.on("userColourChange", (user, oldColour, timestamp) => {
     console.log(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} changed colour from to ${oldColour} to ${user.colour}.`);
     
-    let newMessageElem = $(document.createElement("li"))
+    let newMessageElem = $(document.createElement("span"))
         .text(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} changed colour from to ${oldColour} to ${user.colour}.`)
         .addClass("nonMessage");
     let userElem = $(`#activeUsers > #${user.name}`);
@@ -146,7 +146,7 @@ Handles receiving an error from the server when trying to change colour
 socket.on("userColourChangeError", (errMessage) => {
     console.log(`Error: ${errMessage}`);
 
-    let newMessageElem = $(document.createElement("li"))
+    let newMessageElem = $(document.createElement("span"))
         .text(`Error: ${errMessage}`)
         .addClass("nonMessage");
     
@@ -156,10 +156,10 @@ socket.on("userColourChangeError", (errMessage) => {
 /*
 initialConnect
 Handles a user initally connecting to the server
-Adds the chat history and the list of active users
+Adds the chat history and the spanst of active users
 Tells the user their name
 */
-socket.on("initialConnect", (activeUsers, messageList, user) => {
+socket.on("initialConnect", (activeUsers, messagespanst, user) => {
     //console.log(`${new Date(timestamp).toLocaleTimeString()} - ${user.name} changed colour from to ${oldColour} to ${user.colour}.`);
     
     // get own name
@@ -170,7 +170,7 @@ socket.on("initialConnect", (activeUsers, messageList, user) => {
 
     // add messages from history
     let messageBlock = $("#messages");
-    for( let message of messageList) {
+    for( let message of messagespanst) {
         let timestampElem = $(document.createElement("span"))
             .addClass("timestamp")
             .text(`${new Date(message.timestamp).toLocaleTimeString()} - `);
@@ -184,7 +184,7 @@ socket.on("initialConnect", (activeUsers, messageList, user) => {
             .addClass("message")
             .text(`: ${message.content}`);
 
-        let newMessageElem = $(document.createElement("li"))
+        let newMessageElem = $(document.createElement("span"))
             .append(timestampElem)
             .append(authorElem)
             .append(messageElem);
@@ -197,10 +197,10 @@ socket.on("initialConnect", (activeUsers, messageList, user) => {
         $("#messages").append(newMessageElem);
     }
 
-    // add active user list
+    // add active user spanst
     let activeUsersBlock = $("#activeUsers");
     for( let activeUser of Object.values(activeUsers)) {
-        let newUserElem = $(document.createElement("li"))
+        let newUserElem = $(document.createElement("span"))
             .prop("id", activeUser.name)
             .text(activeUser.name)
             .css('color', activeUser.colour);
