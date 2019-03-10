@@ -51,6 +51,8 @@ app.get('/', (req, res) => {
 
     if(("userName" in req.cookies) && (req.cookies["userName"] in allUsers)) {
         res.cookie("userName", req.cookies["userName"], { maxAge: expiration });
+    } else {
+        res.cookie("userName", req.cookies["userName"], { maxAge: expiration });
     }
 
     res.render("index");
@@ -66,11 +68,20 @@ Handles new connection and session
 io.on("connection", (socket) => {
     let userName = null;
     let user = null;
-    let clientCookies = cookie.parse(socket.request.headers.cookie || socket.handshake.headers.cookie);
+    let rawCookie = socket.request.headers.cookie || socket.handshake.headers.cookie;
     
-    if(("userName" in clientCookies) && (clientCookies["userName"] in allUsers)) {
-        userName = clientCookies["userName"];
-        user = allUsers[userName];
+    if(!rawCookie === undefined) {
+        let clientCookies = cookie.parse(rawCookie);
+    
+        if(("userName" in clientCookies) && (clientCookies["userName"] in allUsers)) {
+            userName = clientCookies["userName"];
+            user = allUsers[userName];
+        } else {
+            userName = generateNewName();
+            user = new User(userName);
+            allUsers[user.name] = user;
+        }
+
     } else {
         userName = generateNewName();
         user = new User(userName);

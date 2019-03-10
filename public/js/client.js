@@ -33,6 +33,9 @@ socket.on("newMessage", (message) => {
     }
 
     $("#messages").append(newMessageElem);
+
+    let messageElems = $("#messages");
+    messageElems.scrollTop(messageElems.prop("scrollHeight"));
 });
 
 /*
@@ -210,6 +213,9 @@ socket.on("initialConnect", (activeUsers, messagespanst, user) => {
 
     // set cookie
     cookie.set("userName", user.name, 1); //lasts one day
+
+    let messageElems = $("#messages");
+    messageElems.scrollTop(messageElems.prop("scrollHeight"));
 });
 
 
