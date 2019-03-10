@@ -70,7 +70,7 @@ io.on("connection", (socket) => {
     let user = null;
     let rawCookie = socket.request.headers.cookie || socket.handshake.headers.cookie;
     
-    if(!rawCookie === undefined) {
+    if(rawCookie != undefined) {
         let clientCookies = cookie.parse(rawCookie);
     
         if(("userName" in clientCookies) && (clientCookies["userName"] in allUsers)) {
