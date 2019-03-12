@@ -98,10 +98,10 @@ socket.on("userNameChange", (oldName, newName, timestamp) => {
     let myName = $("#name");
     if(myName.text() === oldName) {
         myName.text(newName);
+        // set cookie
+        cookie.set("userName", newName, 1); //lasts one day
     }
-
-    // set cookie
-    cookie.set("userName", newName, 1); //lasts one day
+    
 });
 
 /*
